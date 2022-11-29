@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-
 const Schema = mongoose.Schema
 
 const userSchema = new Schema({
@@ -12,12 +11,30 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true
+    },
+    telefon: {
+        type: Number,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    locatie: {
+        type: String,
+        required: true
     }
 })
 
-userSchema.statics.signup = async function(username, password) {
+userSchema.statics.signup = async function(username, password, telefon, email, locatie) {
 
     if(!username || !password) {
+        throw Error("Va rugam sa completati toate campurile")
+    }
+    if(!telefon || !email) {
+        throw Error("Va rugam sa completati toate campurile")
+    }
+    if(!locatie){
         throw Error("Va rugam sa completati toate campurile")
     }
 
@@ -32,7 +49,7 @@ userSchema.statics.signup = async function(username, password) {
 
     const hash = await bcrypt.hash(password, salt)
 
-    const user = await this.create({ username, password: hash })
+    const user = await this.create({ username, password: hash , telefon, email, locatie})
 
     return user
 }
